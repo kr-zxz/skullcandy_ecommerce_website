@@ -6,12 +6,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <style>
+        /* Sidebar styles */
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #333;
+            padding-top: 20px;
+        }
+
+        .sidebar a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            color: white;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+
         /* Styles for the header */
         .header {
             background-color: #000000;
             color: #fff;
             padding: 10px;
             text-align: center;
+            margin-left: 260px;
         }
 
         /* Styles for the table */
@@ -19,6 +43,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            margin-left: 260px;
         }
 
         th, td {
@@ -55,68 +80,73 @@
             background-color: #f44336;
         }
 
+        /* Styles for the reorder level section */
         .reorder-level-section {
-    margin-top: 20px;
-}
+            margin-top: 20px;
+            margin-left: 260px;
+        }
 
-.reorder-level-heading {
-    font-size: 24px;
-    margin-bottom: 10px;
-    color: #333; /* Adjust color as needed */
-}
+        .reorder-level-heading {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #333; /* Adjust color as needed */
+        }
 
-.reorder-level-list {
-    list-style-type: none;
-    padding: 0;
-}
+        .reorder-level-list {
+            list-style-type: none;
+            padding: 0;
+        }
 
-.reorder-level-item {
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #f9f9f9; /* Light gray background */
-    border-radius: 5px;
-}
+        .reorder-level-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9; /* Light gray background */
+            border-radius: 5px;
+        }
 
-.restock-link {
-    text-decoration: none;
-    color: #007bff;
-}
+        .restock-link {
+            text-decoration: none;
+            color: #007bff;
+        }
 
-.no-reorder-level-item {
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #f9f9f9; /* Light gray background */
-    border-radius: 5px;
-    color: #888; /* Gray color for empty message */
-}
-
-
-        
+        .no-reorder-level-item {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f9f9f9; /* Light gray background */
+            border-radius: 5px;
+            color: #888; /* Gray color for empty message */
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <a href="{% url 'admin_add' %}" class="btn">Add Product</a>
-        <a href="{% url 'adminorders' %}" class="btn">Order Items</a>
-        <a href="{% url 'index' %}" class="btn">Home</a>
-        <a href="{% url 'user_logout' %}" class="btn">Log out</a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="{% url 'adminpage' %}">Admin Home</a>
+        <a href="{% url 'admin_add' %}">Add Products</a>
+        <a href="{% url 'adminorders' %}">Order Items</a>
+        <a href="{% url 'reoder' %}">Restock</a>
+        <a href="{% url 'supplier_replies' %}">Supplier Reply Details</a>
+        <a href="{% url 'admin_appointment_list' %}">View Appointments</a>
+        <a href="{% url 'user_logout' %}">Logout</a>
     </div>
 
+    <!-- Reorder level section -->
     <div class="reorder-level-section">
         <h2 class="reorder-level-heading">Products at Reorder Level:</h2>
+
         <ul class="reorder-level-list">
             {% for product in products_at_reorder_level %}
                 <li class="reorder-level-item">
                     This {{ product.name }} needs to be restocked soon  
-                    <a href="/edit_product/{{product.id}}/" class="restock-link">Restock</a>
-                    <a href="/send_request/{{product.id}}/">Send request</a>
-
+                    <a href="/edit_product/{{ product.id }}/" class="restock-link">Restock</a>
+                    <a href="/send_request/{{ product.id }}/">Send request</a>
                 </li>
             {% empty %}
                 <li class="no-reorder-level-item">No products at reorder level.</li>
             {% endfor %}
         </ul>
     </div>
-    
 
-    
+</body>
+</html>

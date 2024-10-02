@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Review</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        main {
+            padding: 40px;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+        .review-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .review-section h2 {
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        textarea {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            resize: vertical;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            align-self: flex-start;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Review Your Consultation with Dr. {{ doctor.name }}</h1>
+    </header>
+    <main>
+        <section class="review-section">
+            <h2>Leave a Review</h2>
+            <form method="post">
+                {% csrf_token %}
+                <label for="rating">Rate the Consultation (1-5):</label>
+                <input type="number" id="rating" name="rating" min="1" max="5" required>
+                
+                <label for="review">Your Feedback:</label>
+                <textarea id="review" name="review" rows="5" required></textarea>
+                
+                <button class="button" type="submit">Submit Review</button>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

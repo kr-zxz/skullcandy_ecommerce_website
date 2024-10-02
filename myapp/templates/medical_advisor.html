@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Dashboard with Logo</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f9fc; /* Soft blue background */
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            background-color: #007bbf;
+            padding: 15px;
+            color: #fff;
+        }
+
+        .navbar-brand img {
+            height: 50px;
+            width: auto;
+        }
+
+        .navbar a {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .navbar a:hover {
+            color: #c1efff;
+        }
+
+        /* Sidebar */
+        .wrapper {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            background-color: #e3edf3;
+            color: #444;
+            padding-top: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar a {
+            padding: 15px 20px;
+            display: block;
+            color: #007bbf;
+            font-size: 16px;
+            text-decoration: none;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: #007bbf;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .sidebar a.active {
+            background-color: #007bbf;
+            color: white;
+        }
+
+        /* Content area */
+        .content {
+            flex: 1;
+            padding: 40px;
+            background-color: #f5f9ff;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #007bbf;
+            margin-bottom: 20px;
+            font-size: 36px;
+            text-align: center;
+        }
+
+        .card {
+            border-radius: 10px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            border: none;
+            background-color: #fff;
+            padding: 30px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .form-control {
+            border-radius: 8px;
+        }
+
+        .btn-primary {
+            background-color: #007bbf;
+            border: none;
+            padding: 12px 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #005a9e;
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(to right, #007bbf, #005a9e);
+            color: white;
+            padding: 15px 0;
+            width: 100%;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .footer a {
+            color: #b3e5fc;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+
+            .navbar-brand img {
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar with Logo -->
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <a class="navbar-brand" href="#">
+            <img src="logo.png" alt="Medical Logo"> Medical Dashboard
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </nav>
+
+    <!-- Sidebar and content wrapper -->
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h4 class="text-center mb-4">Dashboard</h4>
+            <a href="{% url 'patient_form' %}" class="active"><i class="fas fa-chart-line"></i> Visualizations</a>
+            <a href="https://4jjhp7pfwu7enin9ek7a7c.streamlit.app//" target="_blank">
+                <i class="fas fa-file-alt"></i> Streamlit App
+            </a>
+            <a href="#"><i class="fas fa-file-alt"></i> Report</a>
+            <a href="{% url 'doctor_list' %}"><i class="fas fa-user-md"></i> Doctor</a>
+            <a href="{% url 'profile_update' %}"><i class="fas fa-user"></i> Profile</a>
+            <a href="{% url 'welcome' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+
+        <!-- Content -->
+        <div class="content" style="background-image: url(https://i.pinimg.com/originals/1a/ee/5c/1aee5c344846f449350feae457ea350e.jpg);">
+            <h1>Medical Advice</h1>
+            <!-- Form Section -->
+            <div class="card">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="condition">Condition:</label>
+                        <input type="text" class="form-control" id="condition" name="condition" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="symptoms">Symptoms:</label>
+                        <input type="text" class="form-control" id="symptoms" name="symptoms" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="age">Age:</label>
+                        <input type="number" class="form-control" id="age" name="age" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">Gender:</label>
+                        <select id="gender" name="gender" class="form-control" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="medicine_suggestion">Do you want medicine suggestions?</label>
+                        <select id="medicine_suggestion" name="medicine_suggestion" class="form-control" required>
+                            <option value="yes">Yes</option>
+                            <option value="no">No</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Get Advice</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>&copy; 2024 Medical Advice System. All rights reserved.</p>
+        <p>For support, contact <a href="mailto:support@medicalsystem.com">support@medicalsystem.com</a></p>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Font Awesome JS for icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+
+</body>
+
+</html>

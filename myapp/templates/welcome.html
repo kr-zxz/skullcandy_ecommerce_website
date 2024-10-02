@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to MedCare</title>
+    <!-- Google Fonts for Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f5f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Navbar styling */
+        .navbar {
+            position: sticky;
+            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #9ecad5;
+            color: #fff;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h2 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-logo img {
+            width: 50px;
+            margin-right: 15px;
+        }
+
+        .navbar ul {
+            list-style-type: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #e8c787;
+        }
+
+        /* Hero section styling */
+        .hero {
+            background-color: #373b3a;
+            padding: 80px 80px;
+            text-align: center;
+            color: white;
+            border-bottom: 5px solid #007bff;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero button {
+            background-color: #007bff;
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .hero button:hover {
+            background-color: #08090a;
+            transform: scale(1.05);
+        }
+
+        /* Cards styling */
+        .cards-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            padding: 50px 20px;
+            background-color: #d3ccb9;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 30%;
+            margin: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .card i {
+            font-size: 40px;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .card p {
+            font-size: 16px;
+            color: #666;
+        }
+
+        /* Footer styling */
+        .footer {
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .footer p {
+            margin: 5px 0;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            font-size: 20px;
+        }
+
+        .footer a:hover {
+            color: #f9f9f9;
+        }
+
+        /* Chatbot button */
+        .chatbot-card {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background-color: #007bff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .chatbot-card:hover {
+            transform: scale(1.1);
+            background-color: #0056b3;
+        }
+
+        .chatbot-card i {
+            font-size: 36px;
+        }
+
+        /* Medical Information Ticker */
+        .marquee-container {
+            width: 100%;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            padding: 10px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .marquee {
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .marquee p {
+            display: inline-block;
+            padding-left: 100%;
+            font-size: 20px;
+            font-weight: bold;
+            animation: scroll 10s linear infinite;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 15px rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+        }
+
+        .marquee p:hover {
+            color: #ffeb3b;
+            text-shadow: 0 0 10px rgba(255, 235, 59, 1), 0 0 20px rgba(255, 235, 59, 0.8);
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+
+    <script>
+        // Add a pause on hover functionality for ticker
+        const tickerText = document.getElementById('ticker-text');
+
+        tickerText.addEventListener('mouseover', () => {
+            tickerText.style.animationPlayState = 'paused';
+        });
+
+        tickerText.addEventListener('mouseout', () => {
+            tickerText.style.animationPlayState = 'running';
+        });
+    </script>
+
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <img src="https://img.freepik.com/premium-vector/health-care-medical-logo-vector-design_990473-2567.jpg?w=740" alt="MedCare Logo">
+            <h2 style="color: white;">MedCare</h2>
+        </div>
+        <ul>
+            <li><a href="{% url 'welcome' %}">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li><a href="{% url 'index' %}">Our Products</a></li>
+            <li><a href="{% url 'doctor_list' %}">Consulting</a></li>
+            <li><a href="{% url 'medical_advisor' %}">Dashboard</a></li>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'user_appointment_list' %}">My Appointment</a></li>
+                {% else %}
+                    <br><br>
+                {% endif %}
+            </ul>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'user_logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'user_login' %}">Sign In</a></li>
+                {% endif %}
+            </ul>
+        </ul>
+    </nav>
+
+<!-- Hero Section -->
+<section style="background-image: url('https://static.vecteezy.com/system/resources/thumbnails/035/866/755/small_2x/ai-generated-banner-for-pharmacy-and-medicine-multicolored-pills-and-capsules-floating-over-blurred-background-with-empty-space-for-text-motion-blur-medical-and-addiction-concept-photo.jpg'); background-size: cover; background-position: center; padding: 100px 60px; text-align: center; color: white; border-bottom: 5px solid #007bff; position: relative;">
+    <div style="max-width: 600px; background-color: rgba(228, 187, 187, 0.8); padding: 40px; border-radius: 10px; margin: 0 auto;">
+        <h1 style="font-size: 48px; margin-bottom: 20px; color: #08090a; text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);">Welcome to MedCare</h1>
+        <p style="font-size: 20px; margin-bottom: 30px; color: #000; text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);">Expert medical consultations and quality products, all in one place!</p>
+        <button style="background-color: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 25px; font-size: 18px; cursor: pointer; transition: background-color 0.3s ease, transform 0.3s ease; display: inline-block;" 
+            onmouseover="this.style.backgroundColor='#08090a'; this.style.transform='scale(1.05)';" 
+            onmouseout="this.style.backgroundColor='#007bff'; this.style.transform='scale(1)';">
+            Get Started
+        </button>
+    </div>
+</section>
+
+
+    <!-- Medical Ticker Section -->
+    <div class="marquee-container">
+        <div class="marquee">
+            <p id="ticker-text">Latest Medical News: Stay Healthy! &nbsp; Health is Wealth! &nbsp; Contact MedCare for consultations & products!</p>
+        </div>
+    </div>
+
+    <!-- Cards Section -->
+    <div class="cards-container">
+        <div class="card">
+            <i class="fas fa-hospital"></i>
+            <h3>Consult a Doctor</h3>
+            <p>Book online appointments with specialists from various fields for quick and reliable medical consultations.</p>
+        </div>
+        <div class="card">
+            <i class="fas fa-pills"></i>
+            <h3>Find Medications</h3>
+            <p>Browse through a variety of medications and supplements suited to your needs, delivered straight to your door.</p>
+        </div>
+        <div class="card">
+            <i class="fas fa-user-md"></i>
+            <h3>Medical Advice</h3>
+            <p>Get personalized medical advice and care plans curated by our expert panel of doctors for optimal health management.</p>
+        </div>
+    </div>
+
+    <!-- Chatbot Button -->
+    <div class="chatbot-card" onclick="location.href='{% url 'chat_home' %}'">
+        <i class="fas fa-comment-dots"></i>
+    </div>
+
+    <!-- Footer Section -->
+    <footer class="footer">
+        <p>&copy; 2024 MedCare. All Rights Reserved.</p>
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+    </footer>
+
+</body>
+</html>

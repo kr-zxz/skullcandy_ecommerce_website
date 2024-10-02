@@ -6,6 +6,8 @@ from django.utils import timezone
 
 
 
+
+
 class UserProfile(AbstractUser):
     # Add any additional fields you need here
     age = models.PositiveIntegerField(blank=True, null=True)
@@ -123,4 +125,75 @@ class Supplier_order(models.Model):
     delivery_date = models.DateField()
     date_of_delivery = models.DateField(null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='no response')
+
+# models.py
+
+from django.db import models
+from django.contrib.auth.models import User
+
+class Doctor(models.Model):
+    SPECIALIZATION_CHOICES = [
+        ('general', 'General Physician'),
+        ('cardiologist', 'Cardiologist'),
+        ('dermatologist', 'Dermatologist'),
+        # Add other specializations
+    ]
+    name = models.CharField(max_length=100)
+    specialization = models.CharField(max_length=50, choices=SPECIALIZATION_CHOICES)
+    description = models.TextField()
+    video_call_link = models.URLField()  # Link for the video call
+
+    def __str__(self):
+        return self.name
+
+class DoctorAvailability(models.Model):
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+
+    def __str__(self):
+        return f"{self.doctor.name} - {self.date} ({self.start_time} - {self.end_time})"
+
+class Appointment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
+    availability = models.ForeignKey(DoctorAvailability, on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, default='Pending')
+    appointment_time = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.user.username} - {self.doctor.name} - {self.appointment_time}"
+
+from django.db import models
+from django.contrib.auth.models import User
+
+
+#visuals
+#visuals
+from django.db import models
+
+class PatientData(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    name = models.CharField(max_length=100)
+    age = models.IntegerField()
+    gender = models.CharField(max_length=10)
+    date = models.DateField(auto_now_add=True)
+    sugar_rate = models.FloatField()
+    pressure = models.FloatField()
+    disease_affected = models.CharField(max_length=200)
+    cholesterol_level = models.FloatField()  # Updated field
+
+    def __str__(self):
+        return self.name
+
+
+class ChatHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    message_input = models.TextField()
+    bot_response = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def _str_(self):
+        return f"{self.user.username} - {self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 

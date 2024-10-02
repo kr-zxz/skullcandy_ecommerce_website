@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approve Appointment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .button {
+            display: block;
+            width: 100px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            margin: 20px auto;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Approve Appointment</h1>
+    <p>Are you sure you want to approve the appointment for {{ appointment.user.username }} with Dr. {{ appointment.doctor.name }} on {{ appointment.appointment_time }}?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="button">Approve Appointment</button>
+    </form>
+    <a href="{% url 'admin_appointment_list' %}" class="button">Cancel</a>
+</body>
+</html>

@@ -1,10 +1,11 @@
+import os
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from .forms import ProductForm
-from .models import Category, Product, UserProfile,Supplier,Supplier_order
+from .models import Category, ChatHistory, Product, UserProfile,Supplier,Supplier_order
 from django.contrib.auth.decorators import login_required
 from .forms import UserProfileForm
 from django.shortcuts import render, redirect
@@ -82,39 +83,40 @@ def user_register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
+            user = form.save()  # Save the user to the database
+            login(request, user)  # Log the user in
             registration_successful = True
-            return redirect('user_login')
+            return redirect('user_login')  # Redirect to the login page
     else:
-        form = CustomUserCreationForm()
+        form = CustomUserCreationForm()  # Create an empty form
 
     return render(request, 'user_register.html', {'form': form, 'registration_successful': registration_successful})
 
+    return render(request, 'user_register.html', {'form': form, 'registration_successful': registration_successful})
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 
-def user_login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('index')
-            else:
-                form.add_error(None, 'Invalid username or password')
-        else:
-            # Clear the password field for security reasons
-            form.data = form.data.copy()
-            form.data['password'] = ''
-    else:
-        form = AuthenticationForm()
+# def user_login(request):
+#     if request.method == 'POST':
+#         form = AuthenticationForm(request, data=request.POST)
+#         if form.is_valid():
+#             username = form.cleaned_data['username']
+#             password = form.cleaned_data['password']
+#             user = authenticate(request, username=username, password=password)
+#             if user is not None:
+#                 login(request, user)
+#                 return redirect('medical-advisor')
+#             else:
+#                 form.add_error(None, 'Invalid username or password')
+#         else:
+#             # Clear the password field for security reasons
+#             form.data = form.data.copy()
+#             form.data['password'] = ''
+#     else:
+#         form = AuthenticationForm()
     
-    return render(request, 'user_login.html', {'form': form})
+#     return render(request, 'user_login.html', {'form': form})
 
 
 
@@ -123,7 +125,7 @@ def user_logout(request):
     logout(request)
     # Redirect to the index page after logout
 
-    return redirect('index')
+    return redirect('welcome')
 
 
 from django.contrib.auth import authenticate, login
@@ -142,7 +144,7 @@ def user_login(request):
                 if user.is_superuser:
                     return redirect('adminpage')  # Redirect admin to admin page
                 else:
-                    return redirect('index')  # Redirect regular user to index page
+                    return redirect('welcome')  # Redirect regular user to index page
             else:
                 error_message = 'Invalid credentials. Please try again.'
                 return render(request, 'user_login.html', {'form': form, 'error_message': error_message})
@@ -651,23 +653,29 @@ def admin_add_product(request):
 from django.shortcuts import render
 from .models import Product, Category
 
+# def home(request):
+#     categories = Category.objects.all()
+#     selected_category = None
+#     products = Product.objects.all()
+
+#     if 'category' in request.GET:
+#         category_id = request.GET['category']
+#         if category_id:
+#             selected_category = Category.objects.get(pk=category_id)
+#             products = Product.objects.filter(category=selected_category)
+
+#     context = {
+#         'categories': categories,
+#         'selected_category': selected_category,
+#         'products': products,
+#     }
+#     return render(request, 'home.html', context)
+
+from django.shortcuts import render
+
+# Define the home view with request as an argument
 def home(request):
-    categories = Category.objects.all()
-    selected_category = None
-    products = Product.objects.all()
-
-    if 'category' in request.GET:
-        category_id = request.GET['category']
-        if category_id:
-            selected_category = Category.objects.get(pk=category_id)
-            products = Product.objects.filter(category=selected_category)
-
-    context = {
-        'categories': categories,
-        'selected_category': selected_category,
-        'products': products,
-    }
-    return render(request, 'home.html', context)
+    return render(request, 'home.html')  # Render the template for home page
 
 from django.shortcuts import render
 from django.db.models import Count
@@ -848,3 +856,768 @@ def supplier_replay(request, id):
 
     context = {'order_detail': order_detail}
     return render(request, 'supplier.html', context)
+
+
+def welcome(request):
+    return render(request, 'welcome.html')
+
+
+
+import google.generativeai as genai
+from django.shortcuts import render, redirect
+from django.urls import reverse
+
+# Configure Gemini API key
+genai.configure(api_key="AIzaSyDchGl9bAAz2y3uXkTQ8znlo-SEgUYUGWc")
+
+# Create the model
+generation_config = {
+    "temperature": 1,
+    "top_p": 0.95,
+    "top_k": 64,
+    "max_output_tokens": 8192,
+    "response_mime_type": "text/plain",
+}
+
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    generation_config=generation_config,
+)
+
+from django.shortcuts import render, redirect
+from django.urls import reverse
+import google.generativeai as genai
+
+# Configure Google Gemini API
+api_key = os.getenv("AIzaSyDchGl9bAAz2y3uXkTQ8znlo-SEgUYUGWc", "AIzaSyCEaj-xKRhX36YEFDMyMLr4elcrYuir9I0")
+genai.configure(api_key=api_key)
+
+# Configure the model
+generation_config = {
+    "temperature": 1,
+    "top_p": 0.95,
+    "top_k": 64,
+    "max_output_tokens": 8192,
+    "response_mime_type": "text/plain",
+}
+
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    generation_config=generation_config,
+)
+@login_required(login_url=user_login)
+def medical_advisor_view(request):
+    if request.method == 'POST':
+        condition = request.POST.get('condition')
+        symptoms = request.POST.get('symptoms')
+        age = request.POST.get('age')
+        gender = request.POST.get('gender')
+        medicine_suggestion = request.POST.get('medicine_suggestion') == 'yes'
+        
+        # Prepare the message with input values for the chatbot prompt
+        chat_history = [
+            {
+                "role": "user",
+                "parts": [
+                    f"Act as a medical adviser. The user can input the Condition, Symptoms, Age, and Gender. Based on that, suggest the treatment and any relevant medicine (if requested) with clear instructions.\n\n"
+                    f"Condition: {condition}\n"
+                    f"Symptoms: {symptoms}\n"
+                    f"Age: {age}\n"
+                    f"Gender: {gender}\n"
+                ]
+            },
+            {
+                "role": "model",
+                "parts": [
+                    "I will act as a medical advisor and provide suggestions based on the provided information. Please note this is not a substitute for real medical advice. Now processing the request...\n"
+                ]
+            }
+        ]
+        
+        # Send the message depending on whether the user asked for medicine suggestion or not
+        if medicine_suggestion:
+            prompt = (
+                f"Condition: {condition}\n"
+                f"Symptoms: {symptoms}\n"
+                f"Age: {age}\n"
+                f"Gender: {gender}\n"
+                "Please suggest the appropriate medicine, dosage, and method. Also specify if the medicine is suitable for certain age groups."
+            )
+        else:
+            prompt = (
+                f"Condition: {condition}\n"
+                f"Symptoms: {symptoms}\n"
+                f"Age: {age}\n"
+                f"Gender: {gender}\n"
+                "Please provide a method of treatment without medicine suggestions."
+            )
+
+        # Start a chat session with the model
+        chat_session = model.start_chat(history=chat_history)
+        response = chat_session.send_message(prompt)
+
+        # Format the response to be more readable (line by line)
+        result = response.text.strip().replace(". ", ".\n")  # Adding line breaks after sentences
+        
+        # You can further improve the formatting based on specific patterns in the response
+        result_lines = result.split("\n")
+        formatted_result = "\n".join([f"- {line.strip()}" for line in result_lines if line.strip()])
+
+        return redirect(f"{reverse('advice_results')}?advice={formatted_result}")
+
+    return render(request, 'medical_advisor.html')
+
+
+def advice_results_view(request):
+    advice = request.GET.get('advice', '')
+    return render(request, 'advice_results.html', {'result': advice})
+
+# views.py
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Doctor, DoctorAvailability, Appointment
+from django.contrib.auth.decorators import login_required
+from django.utils.timezone import now
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.timezone import now
+from django.core.mail import send_mail  # For sending email notifications
+from .models import Doctor, DoctorAvailability, Appointment
+
+@login_required(login_url=user_login)
+def doctor_list(request):
+    doctors = Doctor.objects.all()
+    return render(request, 'doctor_list.html', {'doctors': doctors})
+
+@login_required
+def doctor_availability(request, doctor_id):
+    doctor = get_object_or_404(Doctor, id=doctor_id)
+    availability = DoctorAvailability.objects.filter(doctor=doctor, date__gte=now().date())
+    return render(request, 'doctor_availability.html', {'doctor': doctor, 'availability': availability})
+
+@login_required
+def book_appointment(request, availability_id):
+    availability = get_object_or_404(DoctorAvailability, id=availability_id)
+    if request.method == 'POST':
+        # Book the appointment
+        appointment = Appointment.objects.create(
+            user=request.user,
+            doctor=availability.doctor,
+            availability=availability,
+            appointment_time=availability.date
+        )
+        # Send a confirmation email
+        send_mail(
+            'Appointment Confirmation',
+            f'Your appointment with Dr. {availability.doctor.name} on {availability.date} is confirmed.',
+            'admin@consultation.com',
+            [request.user.email],
+            fail_silently=False,
+        )
+        return redirect('appointment_success')
+
+    return render(request, 'book_appointment.html', {'availability': availability})
+
+@login_required
+def appointment_success(request):
+    # Get the latest appointment for success confirmation
+    latest_appointment = Appointment.objects.filter(user=request.user).latest('appointment_time')
+    return render(request, 'appointment_success.html', {'appointment': latest_appointment})
+
+@login_required
+def cancel_appointments(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    if request.method == 'POST':
+        appointment.status = 'Cancelled'
+        appointment.save()
+        # Notify the user via email
+        send_mail(
+            'Appointment Cancelled',
+            f'Your appointment with Dr. {appointment.doctor.name} on {appointment.appointment_time} has been cancelled.',
+            'admin@consultation.com',
+            [request.user.email],
+            fail_silently=False,
+        )
+        return redirect('profile')
+
+    return render(request, 'cancel_appointment.html', {'appointment': appointment})
+
+@login_required
+def reschedule_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    if request.method == 'POST':
+        new_date = request.POST.get('new_date')
+        appointment.appointment_time = new_date
+        appointment.save()
+        # Send reschedule notification
+        send_mail(
+            'Appointment Rescheduled',
+            f'Your appointment with Dr. {appointment.doctor.name} has been rescheduled to {new_date}.',
+            'admin@consultation.com',
+            [request.user.email],
+            fail_silently=False,
+        )
+        return redirect('profile')
+
+    return render(request, 'reschedule_appointment.html', {'appointment': appointment})
+
+@login_required
+def medical_advisor_result_view(request):
+    result = request.session.get('result', None)
+    error = None
+    if not result:
+        error = "No result found. Please try again."
+    
+    return render(request, 'myapp/medical_advisor_result.html', {'result': result, 'error': error})
+
+
+#visuals
+# views.py
+from django.shortcuts import render
+import matplotlib.pyplot as plt
+import io
+import base64
+
+def create_scatter_plot():
+    fig, ax = plt.subplots()
+    ax.scatter([1, 2, 3, 4], [10, 20, 25, 30])
+    ax.set_title('Sample Scatter Plot')
+    ax.set_xlabel('X-axis')
+    ax.set_ylabel('Y-axis')
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    buf.close()
+    return image_base64
+
+def create_bar_chart():
+    fig, ax = plt.subplots()
+    categories = ['A', 'B', 'C', 'D']
+    values = [5, 15, 25, 10]
+    ax.bar(categories, values, color='skyblue')
+    ax.set_title('Sample Bar Chart')
+    ax.set_xlabel('Categories')
+    ax.set_ylabel('Values')
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    buf.close()
+    return image_base64
+
+def create_pie_chart():
+    fig, ax = plt.subplots()
+    labels = ['A', 'B', 'C', 'D']
+    sizes = [20, 30, 25, 25]
+    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
+    ax.set_title('Sample Pie Chart')
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    buf.close()
+    return image_base64
+
+def visuals(request):
+    scatter_plot = create_scatter_plot()
+    bar_chart = create_bar_chart()
+    pie_chart = create_pie_chart()
+    
+    context = {
+        'scatter_plot': scatter_plot,
+        'bar_chart': bar_chart,
+        'pie_chart': pie_chart,
+    }
+    
+    return render(request, 'visuals.html', context)
+
+
+#admin aprove appointments
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.admin.views.decorators import staff_member_required
+from django.core.mail import send_mail
+from django.conf import settings
+from .models import Appointment
+
+@staff_member_required
+def admin_appointment_list(request):
+    appointments = Appointment.objects.all().order_by('-appointment_time')
+    context = {
+        'appointments': appointments
+    }
+    return render(request, 'admin_appointment_list.html', context)
+
+@staff_member_required
+def approve_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+
+    if request.method == 'POST':
+        # Update the appointment status
+        appointment.status = 'Approved'
+        appointment.save()
+
+        # Send email notification
+        subject = 'Appointment Approved'
+        message = f'Your appointment with Dr. {appointment.doctor.name} has been approved! ' \
+                  f'Details: {appointment.appointment_time}. ' \
+                  f'Join the video call using this link: [INSERT_VIDEO_CALL_LINK]'
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [appointment.user.email],
+            fail_silently=False,
+        )
+
+        return redirect('admin_appointment_list')  # Redirect to the appointment list
+
+    context = {
+        'appointment': appointment
+    }
+    return render(request, 'approve_appointment.html', context)
+
+
+#visualisation
+
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from .models import PatientData
+from .forms import PatientDataForm
+import json
+import csv
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from datetime import datetime
+from django.contrib.auth.decorators import login_required
+
+# Health status levels for sugar, pressure, and cholesterol
+SUGAR_LEVELS = {
+    'normal': (70, 130),
+    'high': (131, 200),
+    'low': (0, 69)
+}
+
+PRESSURE_LEVELS = {
+    'normal': (90, 120),
+    'high': (121, 140),
+    'low': (0, 89)
+}
+
+CHOLESTEROL_LEVELS = {
+    'normal': (125, 200),
+    'high': (201, 240),
+    'low': (0, 124)
+}
+
+# Function to get health status based on predefined levels
+def get_health_status(value, levels):
+    if levels['normal'][0] <= value <= levels['normal'][1]:
+        return 'Normal'
+    elif levels['high'][0] <= value <= levels['high'][1]:
+        return 'High'
+    else:
+        return 'Low'
+
+# View to handle the patient data form submission
+@login_required
+def patient_form(request):
+    if request.method == 'POST':
+        form = PatientDataForm(request.POST)
+        if form.is_valid():
+            patient_data = form.save(commit=False)
+            patient_data.user = request.user  # Associate the patient data with the logged-in user
+            patient_data.save()  # Save the instance
+            return redirect('patient_data')
+    else:
+        form = PatientDataForm()
+    return render(request, 'patient_form.html', {'form': form})
+
+# View to display the patient data for the logged-in user
+@login_required
+def patient_data(request):
+    data = PatientData.objects.filter(user=request.user).order_by('-date')
+
+    data_list = []
+    for item in data:
+        sugar_status = get_health_status(item.sugar_rate, SUGAR_LEVELS)
+        pressure_status = get_health_status(item.pressure, PRESSURE_LEVELS)
+        cholesterol_status = get_health_status(item.cholesterol_level, CHOLESTEROL_LEVELS)  # New status
+
+        data_list.append({
+            'name': item.name,
+            'age': item.age,
+            'gender': item.gender,
+            'date': item.date.strftime('%Y-%m-%d'),
+            'sugar_rate': item.sugar_rate,
+            'pressure': item.pressure,
+            'disease_affected': item.disease_affected,
+            'cholesterol_level': item.cholesterol_level,  # Updated field
+            'sugar_status': sugar_status,
+            'pressure_status': pressure_status,
+            'cholesterol_status': cholesterol_status  # Updated status
+        })
+
+    json_data = json.dumps(data_list)
+
+    context = {
+        'data': data,
+        'json_data': json_data,
+        'data_list': data_list
+    }
+    return render(request, 'patient_data.html', context)
+
+# CSV Download
+@login_required
+def download_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="patient_data.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Age', 'Gender', 'Date of Record', 'Sugar Rate', 'Pressure', 'Disease Affected', 'Cholesterol Level'])
+
+    patients = PatientData.objects.filter(user=request.user).order_by('-date')
+    for patient in patients:
+        writer.writerow([
+            patient.name,
+            patient.age,
+            patient.gender,
+            patient.date.strftime('%Y-%m-%d'),
+            patient.sugar_rate,
+            patient.pressure,
+            patient.disease_affected,
+            patient.cholesterol_level  # Added cholesterol level
+        ])
+
+    return response
+
+# PDF Download
+@login_required
+def download_pdf(request):
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="patient_data.pdf"'
+    
+    p = canvas.Canvas(response, pagesize=letter)
+    p.drawString(100, 750, "Patient Data Report")
+    p.drawString(100, 730, "Name       Age       Gender       Date       Sugar Rate       Pressure       Disease Affected       Cholesterol Level")
+
+    patients = PatientData.objects.filter(user=request.user).order_by('-date')
+    y = 710
+    for patient in patients:
+        p.drawString(100, y, f"{patient.name}       {patient.age}       {patient.gender}       {patient.date.strftime('%Y-%m-%d')}       {patient.sugar_rate}       {patient.pressure}       {patient.disease_affected}       {patient.cholesterol_level}")
+        y -= 20
+
+    p.showPage()
+    p.save()
+    return response
+
+
+
+#v1
+import plotly.graph_objs as go
+from django.shortcuts import render
+from .forms import TimelineForm
+import datetime
+
+def create_timeline(symptom_date, diagnosis_date, treatment_date, disease_name):
+    events = ['Symptom Onset', 'Diagnosis', 'Treatment Start']
+    dates = [symptom_date, diagnosis_date, treatment_date]
+    
+    fig = go.Figure()
+
+    # Create timeline events as markers
+    fig.add_trace(go.Scatter(
+        x=dates,
+        y=[1, 2, 3],  # Y-values just for spacing on the chart
+        mode='markers+lines',
+        marker=dict(color='green', size=10),
+        text=events
+    ))
+
+    fig.update_layout(
+        title=f"Timeline for {disease_name}",
+        xaxis_title="Date",
+        yaxis_title="Events",
+        yaxis=dict(tickvals=[1, 2, 3], ticktext=events),
+        xaxis=dict(type='date')
+    )
+    
+    # Return the Plotly HTML
+    return fig.to_html(full_html=False)
+
+def timeline_view(request):
+    if request.method == 'POST':
+        form = TimelineForm(request.POST)
+        if form.is_valid():
+            disease_name = form.cleaned_data['disease_name']
+            symptom_date = form.cleaned_data['symptom_start_date']
+            diagnosis_date = form.cleaned_data['diagnosis_date']
+            treatment_date = form.cleaned_data['treatment_start_date']
+
+            timeline_plot = create_timeline(symptom_date, diagnosis_date, treatment_date, disease_name)
+
+            return render(request, 'timeline.html', {
+                'form': form,
+                'timeline_plot': timeline_plot
+            })
+    else:
+        form = TimelineForm()
+
+    return render(request, 'timeline.html', {'form': form})
+
+#v2
+from django.shortcuts import render
+from .forms import OutcomeForm
+import plotly.graph_objs as go
+import plotly.io as pio
+import random
+
+def generate_comparison_chart(age, gender, severity):
+    # For demonstration purposes, generating dummy data
+    # Replace this with actual data from your prediction model
+    
+    age_groups = ['<20', '20-40', '40-60', '>60']
+    recovery_times = [random.randint(5, 15), random.randint(6, 12), random.randint(10, 20), random.randint(12, 25)]
+    gender_groups = ['Male', 'Female']
+    
+    # Create the bar chart
+    fig = go.Figure()
+
+    # Age Group Data
+    fig.add_trace(go.Bar(
+        x=age_groups,
+        y=recovery_times,
+        name='Recovery Time by Age Group',
+        marker_color='lightsalmon'
+    ))
+
+    # Gender Group Data (dummy values for now)
+    gender_recovery = [random.randint(5, 15), random.randint(6, 12)]
+    fig.add_trace(go.Bar(
+        x=gender_groups,
+        y=gender_recovery,
+        name='Recovery Time by Gender',
+        marker_color='lightblue'
+    ))
+
+    # Add layout
+    fig.update_layout(
+        title=f"Outcome Comparison for {age}-year-old {gender}",
+        xaxis_title="Demographics",
+        yaxis_title="Recovery Time (days)",
+        barmode='group'
+    )
+
+    # Return the Plotly figure as HTML
+    return pio.to_html(fig, full_html=False)
+
+def outcome_view(request):
+    if request.method == 'POST':
+        form = OutcomeForm(request.POST)
+        if form.is_valid():
+            age = form.cleaned_data['age']
+            gender = form.cleaned_data['gender']
+            severity = form.cleaned_data['symptom_severity']
+
+            # Generate the comparison chart based on user input
+            comparison_chart = generate_comparison_chart(age, gender, severity)
+
+            return render(request, 'outcome_comparison.html', {
+                'form': form,
+                'comparison_chart': comparison_chart
+            })
+    else:
+        form = OutcomeForm()
+
+    return render(request, 'outcome_comparison.html', {'form': form})
+    
+
+import google.generativeai as genai
+
+# Configure your Google API key
+GOOGLE_API_KEY = 'AIzaSyAnOvp3Yj0GVKeZAuXMDC2v9l7OtiQ3g9U'
+genai.configure(api_key=GOOGLE_API_KEY)
+
+# Initialize the Generative Model
+model = genai.GenerativeModel('gemini-pro')
+
+
+
+@login_required(login_url=user_login)
+def chat_home(request):
+    # Fetch chat history for the logged-in user
+    chat_history = ChatHistory.objects.filter(user=request.user).order_by('created_at')
+
+    if request.method == 'POST':
+        user_input = request.POST.get('userInput').strip()
+
+        if user_input:
+            try:
+                # Generate response using Google Generative AI
+                response = model.generate_content(user_input)
+                bot_response = response.text
+
+                # Save user input and bot response to the database
+                ChatHistory.objects.create(
+                    user=request.user,
+                    message_input=user_input,
+                    bot_response=bot_response
+                )
+
+            except Exception as e:
+                messages.warning(request, f"An error occurred: {str(e)}")
+        
+        return redirect('chat_home')
+
+    context = {
+        'get_history': chat_history,
+        'messages': messages.get_messages(request)
+    }
+
+    return render(request, 'chat.html', context)
+
+
+def patient_data_visualization(request):
+    # Get the current logged-in user
+    current_user = request.user
+    
+    # Retrieve patient data for the logged-in user
+    data_list = PatientData.objects.filter(user=current_user)
+    
+    # Prepare JSON data for Chart.js
+    json_data = [
+        {
+            'name': patient.name,
+            'date': patient.date,
+            'sugar_rate': patient.sugar_rate,
+            'pressure': patient.pressure,
+            'curability_level': patient.curability_level
+        } 
+        for patient in data_list
+    ]
+    
+    return render(request, 'patient_data.html', {
+        'data_list': data_list,
+        'json_data': json_data
+    })
+
+
+
+    #doctor
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
+from django.utils.timezone import now
+from .models import Appointment, DoctorAvailability
+
+@login_required
+def user_appointment_list(request):
+    # Get all appointments for the logged-in user
+    appointments = Appointment.objects.filter(user=request.user).order_by('-appointment_time')
+    return render(request, 'user_appointment_list.html', {'appointments': appointments})
+
+@login_required
+def cancel_appointment(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id, user=request.user)
+    if request.method == 'POST':
+        # Cancel the appointment by updating the status
+        appointment.status = 'Cancelled'
+        appointment.save()
+
+        # Send an email notification for cancellation
+        send_mail(
+            'Appointment Cancelled',
+            f'Your appointment with Dr. {appointment.doctor.name} on {appointment.appointment_time} has been cancelled.',
+            'admin@consultation.com',
+            [request.user.email],
+            fail_silently=False,
+        )
+        return redirect('user_appointment_list')
+
+    return render(request, 'cancel_appointment.html', {'appointment': appointment})
+
+# views.py
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+from django.shortcuts import render
+from io import BytesIO
+import base64
+from .models import Doctor, DoctorAvailability, PatientData, Product
+
+def visualizations(request):
+    # Get data for doctors
+    doctors = Doctor.objects.all()
+    doctor_names = [doctor.name for doctor in doctors]
+    specializations = [doctor.specialization for doctor in doctors]
+
+    # Count of doctors by specialization
+    specialization_counts = pd.Series(specializations).value_counts()
+
+    # Create a bar chart for doctor specializations
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x=specialization_counts.index, y=specialization_counts.values, palette='viridis')
+    plt.title('Number of Doctors by Specialization')
+    plt.xlabel('Specialization')
+    plt.ylabel('Number of Doctors')
+    plt.xticks(rotation=45)
+    # Save plot to a BytesIO object
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    image_png = buf.getvalue()
+    buf.close()
+    chart1 = base64.b64encode(image_png).decode('utf-8')
+
+    # Get patient data
+    patients = PatientData.objects.all()
+    patient_data = {
+        "sugar_rate": [patient.sugar_rate for patient in patients],
+        "pressure": [patient.pressure for patient in patients],
+        "cholesterol_level": [patient.cholesterol_level for patient in patients],
+    }
+    patient_df = pd.DataFrame(patient_data)
+
+    # Boxplot for patient health metrics
+    melted_patient_data = patient_df.melt(value_vars=['sugar_rate', 'pressure', 'cholesterol_level'], 
+                                           var_name='Metric', value_name='Value')
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(data=melted_patient_data, x='Metric', y='Value', palette='pastel')
+    plt.title('Distribution of Patient Health Metrics')
+    plt.xlabel('Health Metric')
+    plt.ylabel('Value')
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    image_png = buf.getvalue()
+    buf.close()
+    chart2 = base64.b64encode(image_png).decode('utf-8')
+
+    # Get data for products
+    products = Product.objects.all()
+    product_names = [product.name for product in products]
+    product_prices = [product.price for product in products]
+    product_quantities = [product.quantity for product in products]
+
+    # Create a bar chart for product prices
+    plt.figure(figsize=(10, 6))
+    sns.barplot(x=product_names, y=product_prices, palette='magma')
+    plt.title('Product Prices')
+    plt.xlabel('Product Name')
+    plt.ylabel('Price')
+    plt.xticks(rotation=45)
+    buf = BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    image_png = buf.getvalue()
+    buf.close()
+    chart3 = base64.b64encode(image_png).decode('utf-8')
+
+    # Prepare context for the template
+    context = {
+        'chart1': chart1,
+        'chart2': chart2,
+        'chart3': chart3,
+    }
+    return render(request, 'visualizations1.html', context)

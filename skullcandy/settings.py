@@ -131,3 +131,4 @@ EMAIL_PORT = 587  # Example: 587 for TLS, 465 for SSL
 EMAIL_USE_TLS = True  # Set to True if your SMTP server requires TLS
 EMAIL_HOST_USER = 'deninjose0@gmail.com'  # Your email address
 EMAIL_HOST_PASSWORD = 'rkix kmij agbg sdqk'  # Your email password
+

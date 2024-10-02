@@ -1,0 +1,96 @@
+<!-- recommendation.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Recommendations</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        canvas {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Recommended Medicines</h1>
+    
+    <div>
+        <label for="sort-by">Sort By:</label>
+        <select id="sort-by">
+            <option value="effectiveness">Effectiveness</option>
+            <option value="price">Price</option>
+        </select>
+        <button id="refresh-chart">Refresh Chart</button>
+    </div>
+    
+    <canvas id="medicineChart"></canvas>
+    
+    <script>
+        const ctx = document.getElementById('medicineChart').getContext('2d');
+
+        function fetchData(sortBy) {
+            $.ajax({
+                url: "{% url 'fetch_data' %}",
+                type: "GET",
+                data: { sort_by: sortBy },
+                success: function(data) {
+                    updateChart(data);
+                }
+            });
+        }
+
+        function updateChart(recommendations) {
+            const medicineNames = recommendations.map(rec => rec.name);
+            const effectivenessScores = recommendations.map(rec => rec.effectiveness);
+            const prices = recommendations.map(rec => rec.price);
+            
+            const chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: medicineNames,
+                    datasets: [{
+                        label: 'Effectiveness Score',
+                        data: effectivenessScores,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Effectiveness Score'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return `Price: $${prices[tooltipItem.dataIndex]}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            fetchData('effectiveness'); // Load data on page load
+            
+            $('#refresh-chart').click(function() {
+                const sortBy = $('#sort-by').val();
+                fetchData(sortBy);
+            });
+        });
+    </script>
+</body>
+</html>

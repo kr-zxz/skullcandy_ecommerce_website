@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Data Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        .chart-container {
+            margin-top: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .btn {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Patient Data</h1>
+
+        <!-- Chart for visualizing data at the top -->
+        <div class="chart-container">
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <!-- Data Table -->
+        <table id="patientTable">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Patient Name</th>
+                    <th onclick="sortTable(1)">Age</th>
+                    <th onclick="sortTable(2)">Date of Record</th>
+                    <th onclick="sortTable(3)">Sugar Rate</th>
+                    <th onclick="sortTable(4)">Blood Pressure</th>
+                    <th>Disease Affected</th>
+                    <th onclick="sortTable(5)">Cholesterol Level</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in data_list %}
+                <tr>
+                    <td>{{ patient.name }}</td>
+                    <td>{{ patient.age }}</td>
+                    <td>{{ patient.date }}</td>
+                    <td>{{ patient.sugar_rate }} mg/dL</td>
+                    <td>{{ patient.pressure }} mmHg</td>
+                    <td>{{ patient.disease_affected }}</td>
+                    <td>{{ patient.cholesterol_level }} mg/dL</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- CSV and PDF download buttons -->
+        <div style="margin-top: 20px;">
+            <a href="{% url 'download_csv' %}" class="btn">Download CSV</a>
+            <a href="{% url 'download_pdf' %}" class="btn">Download PDF</a>
+        </div>
+    </div>
+
+    <script>
+        const data = {{ json_data|safe }};
+        console.log(data); // Debugging line to check the data structure
+
+        const labels = data.map(item => `${item.name} (${item.date})`);
+        const sugarLevels = data.map(item => item.sugar_rate);
+        const pressureLevels = data.map(item => item.pressure);
+        const cholesterolLevels = data.map(item => item.cholesterol_level);
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Sugar Level',
+                        data: sugarLevels,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Pressure Level',
+                        data: pressureLevels,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Cholesterol Level',
+                        data: cholesterolLevels,
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function sortTable(n) {
+            const table = document.getElementById("patientTable");
+            let switching = true;
+            let dir = "asc"; 
+            let switchcount = 0;
+            let shouldSwitch, i;
+            while (switching) {
+                switching = false;
+                const rows = table.rows;
+                for (i = 1; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    const x = rows[i].getElementsByTagName("TD")[n];
+                    const y = rows[i + 1].getElementsByTagName("TD")[n];
+                    if (dir === "asc") {
+                        if (n === 2) { // Date sorting
+                            if (new Date(x.innerHTML) > new Date(y.innerHTML)) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (n === 2) { // Date sorting
+                            if (new Date(x.innerHTML) < new Date(y.innerHTML)) {
+                                shouldSwitch = true;
+                                break;
+                            }
+                        } else if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;      
+                } else {
+                    if (switchcount === 0 && dir === "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        main {
+            padding: 40px;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+        .profile-section {
+            display: flex;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .profile-image {
+            flex: 1;
+            margin-right: 20px;
+        }
+        .profile-image img {
+            border-radius: 10px;
+            max-width: 150px;
+        }
+        .profile-details {
+            flex: 2;
+        }
+        .profile-details h2 {
+            margin-top: 0;
+        }
+        .profile-details p {
+            margin: 8px 0;
+            color: #555;
+        }
+        .profile-details p strong {
+            color: #333;
+        }
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Doctor Profile</h1>
+    </header>
+    <main>
+        <section class="profile-section">
+            <div class="profile-image">
+                <img src="{{ doctor.image_url }}" alt="Doctor Photo">
+            </div>
+            <div class="profile-details">
+                <h2>Dr. {{ doctor.name }}</h2>
+                <p><strong>Specialization:</strong> {{ doctor.get_specialization_display }}</p>
+                <p><strong>Experience:</strong> {{ doctor.experience }} years</p>
+                <p><strong>Education:</strong> {{ doctor.education }}</p>
+                <p><strong>Languages Spoken:</strong> {{ doctor.languages }}</p>
+                <p><strong>Consultation Fee:</strong> ₹{{ doctor.consultation_fee }}</p>
+                <a class="button" href="{% url 'doctor_availability' doctor.id %}">Check Availability</a>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

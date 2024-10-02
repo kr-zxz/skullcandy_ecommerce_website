@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        header, main, footer {
+            text-align: center;
+        }
+        a.button {
+            display: inline-block;
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Appointment Confirmed</h1>
+    </header>
+    <main>
+        <section>
+            <p>Your appointment with Dr. {{ appointment.doctor.name }} has been successfully booked!</p>
+            <p>Check your profile for the details of your upcoming appointment.</p>
+            <a class="button" href="/">Go to Dashboard</a>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Online Doctor Consultation</p>
+    </footer>
+</body>
+</html>

@@ -21,3 +21,14 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 admin.site.register(Category, CategoryAdmin)
+
+
+# admin.py
+
+from django.contrib import admin
+from .models import Doctor, DoctorAvailability, Appointment
+
+admin.site.register(Doctor)
+admin.site.register(DoctorAvailability)
+admin.site.register(Appointment)
+

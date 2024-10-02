@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medicine Recommendation Chatbot</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .chat-container { width: 50%; margin: 0 auto; padding: 20px; }
+        .chat-box { margin-bottom: 20px; }
+        .user-input, .bot-response { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Chatbot for Medical Advice</h1>
+        <div id="chat-box" class="chat-box">
+            <!-- Chat messages will appear here -->
+        </div>
+        <form id="chat-form">
+            <input type="text" id="user_input" placeholder="Enter your symptoms or disease..." required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $("#chat-form").on("submit", function(e) {
+                e.preventDefault();
+                
+                const userInput = $("#user_input").val();
+                if (userInput) {
+                    // Append the user's input to the chat box
+                    $("#chat-box").append('<div class="user-input"><strong>You:</strong> ' + userInput + '</div>');
+                    
+                    // Make an AJAX POST request to send the input to the chatbot view
+                    $.ajax({
+                        url: "{% url 'chatbot' %}",
+                        type: "POST",
+                        data: {
+                            user_input: userInput,
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function(response) {
+                            // Append the bot's response to the chat box
+                            $("#chat-box").append('<div class="bot-response"><strong>Bot:</strong> ' + response.response + '</div>');
+                        },
+                        error: function(xhr, status, error) {
+                            // Display an error message
+                            $("#chat-box").append('<div class="bot-response"><strong>Error:</strong> Something went wrong.</div>');
+                        }
+                    });
+
+                    // Clear the input field after submission
+                    $("#user_input").val('');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

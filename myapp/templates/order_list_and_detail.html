@@ -28,7 +28,7 @@
           padding: 0;
           background-color: #e2e0db;
         }
-    
+
         /* Navbar styles */
         .navbar {
           background-color: #1f1c1c;
@@ -38,70 +38,99 @@
           justify-content: space-between;
           align-items: center;
         }
-    
+
         .navbar a {
           color: #ffffff;
           text-decoration: none;
           margin-right: 20px;
         }
-    
+
         .navbar a:hover {
           color: #000000;
         }
-    
+
+        /* Sidebar styles */
+        .sidebar {
+          height: 100%;
+          width: 250px;
+          position: fixed;
+          top: 0;
+          left: 0;
+          background-color: #1f1c1c;
+          padding-top: 20px;
+        }
+
+        .sidebar a {
+          padding: 10px 15px;
+          text-decoration: none;
+          font-size: 18px;
+          color: #ffffff;
+          display: block;
+          transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+          background-color: #575757;
+        }
+
+        .content {
+          margin-left: 260px;
+          padding: 20px;
+        }
+
         /* Table styles */
         h1 {
           text-align: center;
           margin: 20px 0;
           color: #f10e0e;
         }
-    
+
         table {
           width: 100%;
           border-collapse: collapse;
           border: 1px solid #e13a3a;
           background-color: #ffffff;
         }
-    
+
         th, td {
           padding: 12px;
           border: 1px solid #ccc;
         }
-    
+
         th {
           background-color: #f2f2f2;
           color: #333;
           text-align: left;
         }
-    
+
         td:first-child,
         td:nth-child(2),
         td:nth-child(3) {
           width: 20%;
         }
-    
+
         td:nth-child(4) {
           width: 15%;
           text-align: right;
         }
-    
+
         /* Link styles */
-         {
+        .view-details-link {
           color: #007bff;
           text-decoration: none;
           border-bottom: 1px dotted #007bff;
         }
-    
-        a:hover {
+
+        .view-details-link:hover {
           color: #0056b3;
         }
-    
+
         /* Form styles */
         form {
           display: inline-block;
           margin: 0;
         }
-    
+
         select,
         button {
           padding: 8px;
@@ -112,95 +141,46 @@
           color: #ffffff;
           cursor: pointer;
         }
-    
+
         button:hover {
           background-color: #0400ff;
         }
       </style>
-    
 </head>
 
 
 <body>
-    <!-- HEADER -->
-    <header>
-        <!-- TOP HEADER -->
-        <div id="top-header">
-            <div class="container">
-                <ul class="header-links pull-left">
-                    <li><a href="#"><i class="fa fa-map-marker"></i>Peerumade, India</a></li>
-                    <li><a href="#"><i class="fa fa-phone"></i> +1234567890</a></li>
-                    <li><a href="#"><i class="fa fa-envelope-o"></i>Skullcandy@gmail.com</a></li>
-                  </ul>
-                <ul class="header-links pull-right">
-                    <li><a href="#"><i class="fa fa-dollar"></i> USD</a></li>
-                    <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
-                </ul>
-            </div>
-        </div>
-        <!-- /TOP HEADER -->
+    
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <a href="{% url 'adminpage' %}">Admin Home</a>
+      <a href="{% url 'admin_add' %}">Add Products</a>
+      <a href="{% url 'adminorders' %}">Order Items</a>
+      <a href="{% url 'reoder' %}">Restock</a>
+      <a href="{% url 'supplier_replies' %}">Supplier Reply Details</a>
+      <a href="{% url 'admin_appointment_list' %}">View Appointments</a>
+      <a href="{% url 'user_logout' %}">Logout</a>
+    </div>
 
-        <!-- MAIN HEADER -->
-        <div id="header">
+    <!-- Content Section -->
+    <div class="content">
+
+        <!-- BREADCRUMB -->
+        <div id="breadcrumb" class="section">
             <div class="container">
                 <div class="row">
-                    <!-- LOGO -->
-                    <div class="col-md-3">
-                      <div class="col-md-3 pt-4">
-                        <span class="text-white fw-bold fs-1">Skullcandy</span>
-                      </div>
+                    <div class="col-md-12">
+                        <h3 class="breadcrumb-header"></h3>
+                        <ul class="breadcrumb-tree">
+                            <li><a href="{% url 'index' %}">Home</a></li>
+                        </ul>
                     </div>
-                    <!-- /LOGO -->
-
-                    
-                            <!-- /Menu Toggle -->
-                        </div>
-                    </div>
-                    <!-- /ACCOUNT -->
                 </div>
             </div>
         </div>
-        <!-- /MAIN HEADER -->
-    </header>
-    <!-- /HEADER -->
+        <!-- /BREADCRUMB -->
 
-    <!-- NAVIGATION -->
-    <!-- <nav id="navigation">
-        <div class="container">
-            <div id="responsive-nav">
-                <!- Responsive navigation goes here -->
-                <!-- <ul class="main-nav nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
-                    <li><a href="#">Hot Deals</a></li>
-                    <li><a href="#">Categories</a></li>
-                    <li><a href="#">Laptops</a></li>
-                    <li><a href="#">Smartphones</a></li>
-                    <li><a href="#">Cameras</a></li>
-                    <li><a href="#">Accessories</a></li>
-                </ul> -->
-            </div>
-        </div>
-    </nav> -->
-    <!-- /NAVIGATION -->
-
-    <!-- BREADCRUMB -->
-    <div id="breadcrumb" class="section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h3 class="breadcrumb-header"></h3>
-                    <ul class="breadcrumb-tree">
-                        <li><a href="{%url 'index'%}">Home</a></li>
-                        
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- /BREADCRUMB -->
-
-    <!-- LOGIN FORM -->
-    <body>
+        <!-- Orders Table -->
         <h1>Orders List</h1>
         <table>
           <thead>
@@ -247,85 +227,16 @@
               {% endfor %}
           </tbody>
       </table>
-      
-        <script>
-          function updateStatus(event, orderId) {
-            event.preventDefault();
-            var form = document.getElementById('updateForm_' + orderId);
-            var formData = new FormData(form);
-            var status = formData.get('status');
-            // Perform AJAX request to update status
-            // You can customize this part to your backend implementation
-            console.log('Updating status for order ' + orderId + ' to ' + status);
-          }
-        </script>
-      </body>
-    <!-- /LOGIN FORM -->
 
-    <!-- NEWSLETTER -->
-    <div id="newsletter" class="section">
-        <div class="container">
-            <!-- Newsletter section content goes here -->
-        </div>
+      <!-- Sidebar End -->
     </div>
-    <!-- /NEWSLETTER -->
 
-    <!-- FOOTER -->
-    <footer>
-
-      <footer id="footer">
-          <div class="container">
-              <!-- Your footer content here -->
-              <footer id="footer">
-                  <!-- top footer -->
-                  <div class="section">
-                      <!-- container -->
-                      <div class="container">
-                          <!-- row -->
-                          <div class="row">
-                              <div class="col-md-3 col-xs-6">
-                                  <div class="footer">
-                                      <h3 class="footer-title">About Us</h3>
-                                      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut.</p>
-                                      <ul class="footer-links">
-                                          <li><a href="#"><i class="fa fa-map-marker"></i>Peerumade, India</a></li>
-                                          <li><a href="#"><i class="fa fa-phone"></i> +1234567890</a></li>
-                                          <li><a href="#"><i class="fa fa-envelope-o"></i>Skullcandy@gmail.com</a></li>
-                                      </ul>
-                                  </div>
-                              </div>
-      
-                             
-                          </div>
-                          <!-- /row -->
-                      </div>
-                      <!-- /container -->
-                  </div>
-          </div>
-      </footer>
-    <!-- /FOOTER -->
-
-    <!-- JavaScript -->
-    <script>
-        function showPassword(fieldId) {
-            var passwordInput = document.getElementById(fieldId);
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                document.querySelector('.show-password i').classList.remove('fa-eye');
-                document.querySelector('.show-password i').classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                document.querySelector('.show-password i').classList.remove('fa-eye-slash');
-                document.querySelector('.show-password i').classList.add('fa-eye');
-            }
-        }
-    </script>
     <!-- jQuery Plugins -->
-		<script src="{%static 'js/jquery.min.js'%}"></script>
-		<script src="{%static 'js/bootstrap.min.js'%}"></script>
-		<script src="{%static 'js/slick.min.js'%}"></script>
-		<script src="{%static 'js/nouislider.min.js'%}"></script>
-		<script src="{%static 'js/jquery.zoom.min.js'%}"></script>
-		<script src="{%static 'js/main.js'%}"></script>
+		<script src="{% static 'js/jquery.min.js' %}"></script>
+		<script src="{% static 'js/bootstrap.min.js' %}"></script>
+		<script src="{% static 'js/slick.min.js' %}"></script>
+		<script src="{% static 'js/nouislider.min.js' %}"></script>
+		<script src="{% static 'js/jquery.zoom.min.js' %}"></script>
+		<script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

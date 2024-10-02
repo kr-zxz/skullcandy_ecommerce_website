@@ -53,14 +53,51 @@ class password_changeform(PasswordChangeForm):
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(max_length=254, help_text='Required. Enter a valid email address.')
-    first_name = forms.CharField(max_length=30)
-    last_name = forms.CharField(max_length=30)
+    first_name = forms.CharField(max_length=30, help_text='Enter your first name.')
+    last_name = forms.CharField(max_length=30, help_text='Enter your last name.')
 
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
 class SupplierForm(forms.ModelForm):
     class Meta:
         model = Supplier
         fields = '__all__'
+
+
+#visuals
+#visuals for sugar and pressure
+from django import forms
+from .models import PatientData
+
+class PatientDataForm(forms.ModelForm):
+    class Meta:
+        model = PatientData
+        fields = ['name', 'age', 'gender', 'sugar_rate', 'pressure', 'disease_affected', 'cholesterol_level']
+
+
+#v1
+        from django import forms
+
+class TimelineForm(forms.Form):
+    disease_name = forms.CharField(label='Disease Name', max_length=100)
+    symptom_start_date = forms.DateField(label='Symptom Start Date', widget=forms.SelectDateWidget)
+    diagnosis_date = forms.DateField(label='Diagnosis Date', widget=forms.SelectDateWidget)
+    treatment_start_date = forms.DateField(label='Treatment Start Date', widget=forms.SelectDateWidget)
+
+
+#v2
+from django import forms
+
+class OutcomeForm(forms.Form):
+    disease_name = forms.CharField(label='Disease', max_length=100)
+    age = forms.IntegerField(label='Age')
+    gender = forms.ChoiceField(label='Gender', choices=[('M', 'Male'), ('F', 'Female')])
+    symptom_severity = forms.IntegerField(label='Symptom Severity', min_value=1, max_value=10)
+
+

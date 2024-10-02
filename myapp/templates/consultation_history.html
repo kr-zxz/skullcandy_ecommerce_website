@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultation History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        main {
+            padding: 40px;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+        .history-list {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .history-list h2 {
+            margin-bottom: 20px;
+        }
+        .history-item {
+            border-bottom: 1px solid #ddd;
+            padding: 20px 0;
+        }
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        .history-item p {
+            margin: 5px 0;
+        }
+        .history-item a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Consultation History</h1>
+    </header>
+    <main>
+        <section class="history-list">
+            <h2>Your Previous Consultations</h2>
+            {% for consultation in consultations %}
+            <div class="history-item">
+                <p><strong>Doctor:</strong> Dr. {{ consultation.doctor.name }}</p>
+                <p><strong>Date:</strong> {{ consultation.date }}</p>
+                <p><strong>Time:</strong> {{ consultation.time }}</p>
+                <p><strong>Advice/Prescription:</strong> {{ consultation.prescription }}</p>
+                <a href="/prescription/{{ consultation.id }}">View Prescription</a>
+            </div>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+</html>

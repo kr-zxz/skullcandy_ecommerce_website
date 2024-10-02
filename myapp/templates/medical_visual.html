@@ -1,0 +1,33 @@
+<!-- templates/medical_visual.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medical Advice</title>
+</head>
+<body>
+    <h2>Patient Medical Input Form</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <label for="name">Patient Name:</label>
+        <input type="text" name="patient_name" required><br><br>
+        
+        <label for="age">Age:</label>
+        <input type="number" name="age" required><br><br>
+        
+        <label for="sugar">Current Sugar Rate (Optional):</label>
+        <input type="text" name="current_sugar_rate"><br><br>
+        
+        <label for="pressure">Current Pressure (Optional):</label>
+        <input type="text" name="pressure"><br><br>
+        
+        <label for="disease">Disease Affected:</label>
+        <input type="text" name="disease_affected" required><br><br>
+        
+        <label for="tablets">Tablets Taken:</label>
+        <input type="text" name="tablets_taken"><br><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

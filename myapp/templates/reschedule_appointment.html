@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reschedule Appointment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        header, main, footer {
+            text-align: center;
+        }
+        input[type="date"] {
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #0275d8;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Reschedule Appointment with Dr. {{ appointment.doctor.name }}</h1>
+    </header>
+    <main>
+        <section>
+            <p>Select a new date for your appointment:</p>
+            <form method="post">
+                {% csrf_token %}
+                <input type="date" name="new_date" required>
+                <button type="submit">Reschedule Appointment</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Online Doctor Consultation</p>
+    </footer>
+</body>
+</html>

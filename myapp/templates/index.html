@@ -1,13 +1,13 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+		 <!-- The above 3 meta tags must come first in the head; any other head content must come after these tags -->
 
-		<title>Skullcandy</title>
+		<title>Medcare</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 		<!-- Google font -->
 		<link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
@@ -27,7 +27,16 @@
 
 		<!-- Custom stlylesheet -->
 		<link type="text/css" rel="stylesheet" href="{%static 'css/style.css'%}"/>
-
+        
+        <!-- Inline CSS for background image -->
+        <style>
+            body {
+                background-image: url('{% static "img/dietplan.jpg" %}');
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+            }
+        </style>
 
     </head>
 	<body>
@@ -38,15 +47,19 @@
 				<div class="container">
 					<ul class="header-links pull-left">
 						<li><a href="#"><i class="fa fa-phone"></i>+1234567890</a></li>
-						<li><a href="#"><i class="fa fa-envelope-o"></i> Skullcandy@gmail.com</p></a></li>
+						<li><a href="#"><i class="fa fa-envelope-o"></i>medcare@gmail.com</p></a></li>
 						<li><a href="#"><i class="fa fa-map-marker"></i>Peerumade, India</a></li>
+						
 					</ul>
 					<ul class="header-links pull-right">
                         {% if user.is_authenticated %}
+						<li><a href="#"><i class="fa fa-user-o"></i> Dashboard</a></li>
+
                         <li><a href="{% url 'order_list_and_detail' %}"><i class="fa-solid fa-box"></i> Orders</a></li>
 						<li><a href="{% url 'profile_update' %}"><i class="fa fa-user-o"></i> My Account</a></li>
                         <li><a href="{% url 'user_logout' %}"><i class="fa fa-user-o"></i>Logout</a></li>
                         {% else %}
+						<a href="{% url 'user_login' %}" style="color: white; text-decoration: none; margin-right: 10px;">Dashboard</a>
                         <a href="{% url 'user_login' %}" style="color: white; text-decoration: none; margin-right: 10px;">Login</a>
                         <a href="{% url 'user_register' %}" style="color: white; text-decoration: none; margin-right: 10px;">Signup</a>
                         <a href="{% url 'admin_login' %}" style="color: white; text-decoration: none; margin-right: 10px;">Admin Login</a>
@@ -65,26 +78,27 @@
 					<div class="row">
 						<!-- LOGO -->
 						<div class="col-md-3 pt-4">
-							<span class="text-white fw-bold fs-1">Skullcandy</span>
+							<span class="text-white fw-bold fs-1">Medcare</span>
 						</div>
 						<!-- /LOGO -->
 
 						<!-- SEARCH BAR -->
-						<!-- SEARCH BAR -->
 							<div class="col-md-6">
-								<div class="header-search">
-									<form id="search-form" method="GET" action="{% url 'search' %}">
-										<select id="category-select" class="input-select" name="category">
-											<option value="0"></option>
-											<!-- <option value="2">Wired</option>
-											<option value="5">Wireless</option> -->
+								<div class="header-search d-flex align-items-center justify-content-between">
+									<form id="search-form" method="GET" action="{% url 'search' %}" class="d-flex w-100">
+										<select id="category-select" class="input-select form-control me-2" name="category">
+											<option value="0">Homeopathy</option>
+											<option value="1">Alopathy</option>
+											<option value="2">Ayurvedha</option>
+											<option value="3">mm</option> 
 										</select>
-										<input class="input" name="query" placeholder="Search here">
-										<button type="submit" class="search-btn">Search</button>
+										<input class="input form-control me-2" name="query" placeholder="Search here">
+										<button type="submit" class="search-btn btn btn-primary">Search</button>
 									</form>
 								</div>
 							</div>
 							<!-- /SEARCH BAR -->
+
 
 						<!-- /SEARCH BAR -->
 
@@ -138,7 +152,7 @@
 				<div id="responsive-nav">
 					<!-- NAV -->
 					<ul class="main-nav nav navbar-nav">
-						<li class="active" style="padding-right: 20px;"><a href="{%url 'index'%}">Home</a></li>
+						<li class="active" style="padding-right: 20px;"><a href="{%url 'welcome'%}">Home</a></li>
 					
 					
 					</ul>
@@ -155,14 +169,17 @@
 		<!-- /NAVIGATION -->
 
 		<!-- SECTION -->
-		<div class="section">
+		
+		<!-- NEWSLETTER -->
+		<!-- /NEWSLETTER -->
+		<div class="section" style="background-color: #d3ccb9;background-image: url(https://i.pinimg.com/originals/1a/ee/5c/1aee5c344846f449350feae457ea350e.jpg);">
 			<!-- container -->
-			<div class="container">
+			<div class="container"style="background-color: #d3ccb9">
 				<!-- row -->
 				<div class="row">
 
 					<!-- section title -->
-					<div class="col-md-12">
+					<div class="col-md-12" >
 						<div class="section-title">
 							<h3 class="title">Products</h3>
 						</div>
@@ -200,20 +217,22 @@
                                                     <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
                                                 </form>
 											</div>
+                                            </a>
 										</div>
                                         {% endif %}
                                         {% endfor %}
 										<!-- /product -->
+										
 									</div>
 									<div id="slick-nav-1" class="products-slick-nav"></div>
 								</div>
 								<!-- /tab -->
-						</div>   
+								
+							</div>
 						</div>
 					</div>
 					<!-- Products tab & slick -->
 				</div>
-                
 				<!-- /row -->
 			</div>
 			<!-- /container -->
@@ -231,11 +250,11 @@
 						<div class="col-md-3 col-xs-6">
 							<div class="footer">
 								<h3 class="footer-title">About Us</h3>
-								<p>Skullcandy E commerce Headphones Store</p>
+								<p>This website provides your nutrition and diet plan.</p>
 								<ul class="footer-links">
 									<li><a href="#"><i class="fa fa-map-marker"></i>Peerumade, India</a></li>
-									<li><a href="#"><i class="fa fa-phone"></i> 8590526498</a></li>
-									<li><a href="#"><i class="fa fa-envelope-o"></i>Skullcandy@gmail.com</a></li>
+									<li><a href="#"><i class="fa fa-phone"></i>+1234567890</a></li>
+									<li><a href="#"><i class="fa fa-envelope-o"></i> DietandPlan@gmail.com</a></li>
 								</ul>
 							</div>
 						</div>
@@ -244,10 +263,10 @@
 							<div class="footer">
 								<h3 class="footer-title">Categories</h3>
 								<ul class="footer-links">
-									<li><a href="#">Wired Headphones</a></li>
-									<li><a href="#">Wirless Headphones</a></li>
-									<li><a href="#">Airpodss<a></li>
-						
+									<li><a href="#">Our Products</a></li>
+									<li><a href="#">Diet Plan</a></li>
+									<li><a href="#">Exercise Plan</a></li>
+									<li><a href="#">Nutrition Supplements</a></li>
 								</ul>
 							</div>
 						</div>
@@ -302,41 +321,19 @@
 							</ul>
 							<span class="copyright">
 								<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-								Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">skullcandy</a>
+								Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved
 							<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
 							</span>
 						</div>
 					</div>
-						<!-- /row -->
+					<!-- /row -->
 				</div>
 				<!-- /container -->
 			</div>
 			<!-- /bottom footer -->
 		</footer>
 		<!-- /FOOTER -->
-		<script>
-			document.addEventListener("DOMContentLoaded", function() {
-				// Get the form and select element
-				const form = document.getElementById("search-form");
-				const categorySelect = document.getElementById("category-select");
-		
-				// Add event listener for change event on the select element
-				categorySelect.addEventListener("change", function() {
-					// Submit the form when category changes
-					form.submit();
-				});
-		
-				// Check if the form is submitted without a search query
-				form.addEventListener("submit", function(event) {
-					const queryInput = document.querySelector(".input[name='query']");
-					if (queryInput.value.trim() === "" && categorySelect.value === "0") {
-						event.preventDefault(); // Prevent form submission
-						alert("Please enter a search query or select a category.");
-					}
-				});
-			});
-		</script>
-		
+
 		<!-- jQuery Plugins -->
 		<script src="{%static 'js/jquery.min.js'%}"></script>
 		<script src="{%static 'js/bootstrap.min.js'%}"></script>
@@ -344,6 +341,5 @@
 		<script src="{%static 'js/nouislider.min.js'%}"></script>
 		<script src="{%static 'js/jquery.zoom.min.js'%}"></script>
 		<script src="{%static 'js/main.js'%}"></script>
-
 	</body>
 </html>
